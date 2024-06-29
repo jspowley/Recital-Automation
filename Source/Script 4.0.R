@@ -1,7 +1,11 @@
 # Config
 
 # Setup for script to run using the R Executable
-setwd("C:\\Users\\jsp80\\Documents\\FIN 450\\Recital-Automation\\Source")  # Set your working directory explicitly
+
+args <- commandArgs(trailingOnly = FALSE)
+script_path <- sub("--file=", "", args[grep("--file=", args)])
+script_dir <- normalizePath(dirname(script_path))
+setwd(script_dir)
 
 # Sets the working directory one layer higher
 getwd()
