@@ -1,3 +1,11 @@
+# Recital Scheduling Automation
+
+The impact: 
+
+Reduction of scheduling times by about 20 hours, 2-4 times a year. Due to the small scale of operations and limited human capital, this means turnaround times on event programming have reduced by about a month, resulting in better organized events, and happier parents and teachers.
+
+Brief Summary:
+
 Sometimes simple/short code can yield significant improvements to a business, especially where technical skillsets have been less avaiable earlier in a businesses operations. This is an example of a fix to a local music studios recital registration and scheduling process. Currently, their CRM provides a form output impractical to the average Excel user. The user instead can drop the Input Excel file into the script folder, run the script via shortcut, and have the preprocessed data loaded directly into a scheduling template. Future iterations will then generate schedules for sound techs and recital programs for the audience automatically, through Latex and through Canva mailmerge.
 
 A couple key design points:
