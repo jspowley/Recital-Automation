@@ -1,0 +1,96 @@
+# Config
+getwd()
+setwd('..')
+getwd()
+sink("Source\\output_log.txt", append = TRUE)
+
+library(tidyverse)
+library(readxl)
+library(openxlsx)
+library(xlsx)
+library(rlang)
+
+# Form header config. Place identifiers for extractable information here, exactly as they appear in the form content. Include all spaces.
+# Please list tags in the order in which they appear in the form. Student first and last name should be the first 2 entries.
+Tags_In <- c("First Name: ",
+             "Last Name: ",
+             "Song1 Title: ",
+             "Song1 Length (minutes): ",
+             "Song1 Composer/Arr.: ",
+             "Song2 Title: ",
+             "Song2 Length (minutes): ",
+             "Song2 Composer/Arr.: ",
+             "Song3 Title: ",
+             "Song3 Length (minutes): ",
+             "Song3 Composer/Arr.: ")
+
+#Adds an end tag so the last piece of information isn't truncated.
+End_Tag <- "&&&ENDINGTAG&&&"
+Tags_In <- append(Tags_In, End_Tag)
+
+# We want to be able to quickly add escapes for RegEx purposes without labeling our data in a difficult to read format. 
+# The following function lets us easily transition easily switch between the escaped and non-escaped formats.
+add_escapes <- function(string_in){
+  str_replace_all(string_in, pattern = "\\(", replacement = "\\\\(") %>% 
+    str_replace_all(pattern = "\\)", replacement = "\\\\)") %>% 
+    str_replace_all(pattern = "\\/", replacement = "\\\\/") %>% 
+    return()
+}
+
+# RegEx list for identifying the endpoint for a specific field.
+Tag_List <- str_flatten(Tags_In %>% add_escapes(), collapse = "|")
+
+extract_key_to_col <- function(data, start_id, end_ids, reference_col){
+  # Extracts data by start and end RegEx key.
+  # The Secret Sauce is (?<=Look Behind Pattern)(.*?)(?=Look Ahead Pattern), where (.*?) is lazy (searches for closest start and end patterns)
+  start_id_escaped <- start_id %>% add_escapes()
+  
+  data %>% dplyr::mutate({{start_id}} := 
+                           !!sym(reference_col) %>% 
+                           str_extract(pattern = paste0("(?<=",start_id_escaped,")(.*?)(?=",end_ids,")")) %>% 
+                           str_replace_all(",","") %>% 
+                           trimws()) %>% return()
+}
+
+# File read, narrowed, entries separated (multiple rows), cleaned for extracting keyed values.
+file <- readxl::read_xlsx("Input.xlsx") %>% 
+  dplyr::select(Teacher_Name = name, 
+                filled_at,
+                email, 
+                Performance_List = `Solo Performances and Teacher Duets (Style 1)`) %>% 
+  separate_rows(Performance_List, sep = paste0("[0-9]+: ",Tags_In[1])) %>% 
+  dplyr::filter(!Performance_List=="") %>% 
+  dplyr::mutate(Performance_List = paste0(Tags_In[1],Performance_List,End_Tag))
+
+# Extracting keyed values embedded in a string
+for(i in 1:(length(Tags_In)-1)){
+  file <- file %>% extract_key_to_col(Tags_In[i], Tag_List, "Performance_List")
+}
+
+# Final processing before export
+file <- file %>% dplyr::select(-Performance_List) %>% 
+  # Index of tags must be configured to reflect Tag_List contents
+  # Name
+  # Song 1
+  # Song 2
+  # Song 3
+  dplyr::mutate(Program_Entry = paste0(!!sym(Tags_In[1])," ",!!sym(Tags_In[2]),": ", 
+                                       !!sym(Tags_In[3]), " - ", !!sym(Tags_In[5]), " / ",
+                                       !!sym(Tags_In[6]), " - ", !!sym(Tags_In[8]), " / ",
+                                       !!sym(Tags_In[9]), " - ", !!sym(Tags_In[11])) %>% 
+                  str_replace_all(pattern = " / NA - NA", replacement = ""),
+                temp = 1, PK = cumsum(temp)) %>% 
+  dplyr::select(PK, -temp, everything())
+
+# Adding template Excel File. This merges the converted data into a prefabricated model, for immediate use.
+# wb <- loadWorkbook(file = "Template.xlsx")
+# removeSheet(wb, sheetName = "Master_Input")
+# input_pane <- createSheet(wb, sheetName = "Master_Input")
+# addDataFrame(file, input_pane)
+# saveWorkbook(wb, file = "Output.xlsx")
+
+# Version 2
+wb <- openxlsx::loadWorkbook("Source/Template.xlsx")
+writeData(wb, sheet = "Master_Input", file)
+openxlsx::saveWorkbook(wb, "Output.xlsx", overwrite = TRUE)
+
