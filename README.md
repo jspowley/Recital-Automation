@@ -12,6 +12,7 @@ A couple key design points:
 
 - Ideally the MS office suite would be avoided entirely, by integrating the data import directly to the website and linking the file output directly to an online application such as google sheets. The business owner has declined these features for cybersecurity reasons, and as such, minimmal manual configuration is required to run the process in its current state.
 - Taking a look at the Input.xlsx file, we see an entire able is contained in a single cell, for each teachers submissions. We use look-ahead and look-behind RegEx, combined with a lazy search, to isolate individual elements from the table. This requires specific cofiguration when changes are made to the form.
+- Can be configured to work on other machines, by adjusting the shortcut path accordingly.
 - Flexibility is maximized by using RLang to assign columns flexibily, allowing form fields to all be configured in one place. The only exceptions to this are operations which seek to merge/add columns together, which need to be specificalluy indexed or defined.
 
 This project will continue to grow as the studio requests more changes. No personal information has been revealed in this project, an permission to post the materials conatined herein have been granted by the studio owner.
