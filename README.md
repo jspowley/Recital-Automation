@@ -2,7 +2,7 @@
 
 ### The impact: 
 
-Reduction of scheduling times by about 20 hours, 2-4 times a year. Due to the small scale of operations and limited human capital, this means turnaround times on event programming have reduced by about a month, resulting in better organized events, and happier parents and teachers.
+Reduced of recital scheduling times for a local music school by about 20 hours, 2-4 times a year. Due to the small scale of operations and limited human capital, this means turnaround times on event programming have reduced by about a month, resulting in better organized events, and happier parents and teachers.
 
 ### Brief Summary:
 
