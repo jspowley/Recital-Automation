@@ -24,15 +24,19 @@ library(rlang)
 tryCatch({
 Tags_In <- c("First Name: ",
              "Last Name: ",
+             "Positive Comment / Award: ",
              "Song1 Title: ",
              "Song1 Length (minutes): ",
              "Song1 Composer/Arr.: ",
+             "Song1 Staging/Instruments: ",
              "Song2 Title: ",
              "Song2 Length (minutes): ",
              "Song2 Composer/Arr.: ",
+             "Song2 Staging/Instruments: ",
              "Song3 Title: ",
              "Song3 Length (minutes): ",
-             "Song3 Composer/Arr.: ")
+             "Song3 Composer/Arr.: ",
+             "Song3 Staging/Instruments: ")
 
 #Adds an end tag so the last piece of information isn't truncated.
 End_Tag <- "&&&ENDINGTAG&&&"
@@ -85,9 +89,9 @@ file <- file %>% dplyr::select(-Performance_List) %>%
   # Song 2
   # Song 3
   dplyr::mutate(Program_Entry = paste0(!!sym(Tags_In[1])," ",!!sym(Tags_In[2]),": ", 
-                                       !!sym(Tags_In[3]), " - ", !!sym(Tags_In[5]), " / ",
-                                       !!sym(Tags_In[6]), " - ", !!sym(Tags_In[8]), " / ",
-                                       !!sym(Tags_In[9]), " - ", !!sym(Tags_In[11])) %>% 
+                                       !!sym(Tags_In[4]), " - ", !!sym(Tags_In[6]), " / ",
+                                       !!sym(Tags_In[8]), " - ", !!sym(Tags_In[10]), " / ",
+                                       !!sym(Tags_In[12]), " - ", !!sym(Tags_In[14])) %>% 
                   str_replace_all(pattern = " / NA - NA", replacement = ""),
                 temp = 1, PK = cumsum(temp)) %>% 
   dplyr::select(PK, everything(), -temp)
@@ -102,7 +106,7 @@ file <- file %>% dplyr::select(-Performance_List) %>%
 # Version 2
 wb <- openxlsx::loadWorkbook("Source/Template.xlsx")
 writeData(wb, sheet = "Master_Input", file)
-openxlsx::saveWorkbook(wb, "Output.xlsx", overwrite = TRUE)
+openxlsx::saveWorkbook(wb, "Scheduling_Sheet.xlsx", overwrite = FALSE)
 }, finally = Sys.sleep(3)
 )
 
