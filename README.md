@@ -1,5 +1,7 @@
 # Recital Scheduling Automation
 
+Source code viewable under source\Script 4.0.R
+
 ### The impact: 
 
 Reduced of recital scheduling times for a local music school by about 20 hours, 2-4 times a year. Due to the small scale of operations and limited human capital, this means turnaround times on event programming have reduced by about a month, resulting in better organized events, and happier parents and teachers.
