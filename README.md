@@ -1,6 +1,6 @@
 # Recital Scheduling Automation
 
-Source code viewable under source\Script 4.0.R
+Source code viewable under Source\Script 4.0.R
 
 ### The impact: 
 
